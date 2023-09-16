@@ -1,1 +1,120 @@
+/*
+    12-1-2007
+    Cai Maver, caimaver(at)yahoo.com
+    ARRRduino+NS73M v0.3
+    
+    This code allows an Arduino Diecimila to control an NS73M FM Transmitter Module (Arrr matey!)
+    
+    This sets the NS73M (available from Sparkfun, SKU#: WRL-08482) to transmit
+    at 2mW with 75us pre-emphasis (the standard for North America) on 97.3 MHz.
+    
+    Use this formula to determine the register values for a new transmitting frequency (f):
+    
+    (f + 0.304)/0.008192 <-- use only the whole number and convert the result to 
+                           16-bit binary where the lower byte goes in register 3 
+                           and the upper byte goes in register 4
+                           
+                           ex.: for 97.3 MHz, (97.3 + 0.304)/0.008192 = 11914.55...
+                                11914 = B0010111010001010 so Reg 3=B10001010 and Reg 4=B00101110
+    
+    A future version of this code will allow for on-the-fly frequency changes
+    
+    Thanks to Nathan Seidle at Sparkfun and Jim "ZAPNSPARK" G. for sharing their NS73M code!
+*/
+#include <M5StickCPlus.h>
 
+
+int CK = 0;  //clock pin
+int DA = 25;  //data pin
+int LA = 26;  //latch pin
+
+
+
+void setup(){
+   M5.begin();
+
+  // LCD display. LCd display
+  M5.Lcd.print("Hello World 2");
+
+  Serial.begin(9600);  //begin Serial connection for debugging 
+  
+  pinMode(CK, OUTPUT);
+  pinMode(DA, OUTPUT);
+  pinMode(LA, OUTPUT);
+  digitalWrite(LA, LOW); //unlatch transmitter 
+  delay(100);            //Wait for VDD to settle
+  
+  
+  spi_send(0x0E, B00000101); //Software reset
+
+  spi_send(0x01, B10110100); //Register 1: forced subcarrier, pilot tone on
+    
+  spi_send(0x02, B00000011); //Register 2: Unlock detect off, 2mW Tx Power
+
+  spi_send(0x03, B10001010); //Register 3: Set broadcast freq to 97.3, lower byte
+  spi_send(0x04, B00101110); //Register 4: Set broadcast freq to 97.3, upper byte
+
+  spi_send(0x08, B00011010); //Register 8: set Osc on band 2
+
+  spi_send(0x00, B10100001); //Register 0: 200mV audio input, 75us pre-emphasis on, crystal off, power on
+  
+  spi_send(0x0E, B00000101); //Software reset
+  
+  spi_send(0x06, B00011110); //Register 6: charge pumps at 320uA and 80 uA
+    
+  Serial.print("Transmitting");  //for debugging
+
+ 
+}
+
+
+void loop(){
+
+}
+
+
+
+
+void spi_send(byte reg, byte data)  //routine to send Register Address and Data as LSB-first SPI
+{
+    int x;
+    int n;
+    digitalWrite(LA, LOW);
+    
+    for(x = 0 ; x < 4 ; x++)           //send four-bit register address
+    {
+        digitalWrite(CK, LOW);         //Toggle the SPI clock
+        n = (reg >> x) & 1;            //n is the xth bit of the register byte
+        if (n == 1){
+            digitalWrite(DA, HIGH);    //Put high bit on SPI data bus
+        }
+        else {
+            digitalWrite(DA, LOW);     //Put low bit on SPI data bus
+        } 
+        Serial.print(n);               //send bit to serial connection for debugging
+        digitalWrite(CK, HIGH);        //Toggle the SPI clock
+    }
+
+    for(x = 0 ; x < 8 ; x++)           //send eight-bit register data
+    {
+        digitalWrite(CK, LOW);         //Toggle the SPI clock
+        n = (data >> x) & 1;
+        if (n == 1){
+            digitalWrite(DA, HIGH);    //Put high bit on SPI data bus
+        }
+        else {
+            digitalWrite(DA, LOW);    //Put low bit on SPI data bus
+        }
+        Serial.print(n);              //send bit to serial connection for debugging
+        digitalWrite(CK, HIGH);       //Toggle the SPI clock
+    }
+    delayMicroseconds(1);             //might not be needed, supposedly unstable command anyway
+    
+    digitalWrite(LA, HIGH);           //Latch this transfer
+    delayMicroseconds(4);
+    digitalWrite(LA, LOW);
+    
+    digitalWrite(CK, LOW);            //This is to keep CK pin at 0V at end of data transfer
+    Serial.print("\n");               // send new-line to serial for debugging
+    
+}

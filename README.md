@@ -13,9 +13,9 @@ List of important things
 - M5StickC+
 - Cigarette lighter with USB-C
 - PCB for NS73M for breadboard 
-      OSH Park NS73M design
+      Found one on OSH Park 
 - PCB for BM20 for breadboard
-      I created a PCB for this using Eagle. Everything for that PCB is in the "eagle" file
+      Found one on OSH Park
 - PCB for Bluetooth FM Transmitter
       I created the PCB for this using Eagle. Everything for that PCB is in the "eagle" file
 - Arduino code

@@ -17,7 +17,7 @@ List of important things
 - PCB for BM20 for breadboard
       Found one on OSH Park
 - PCB for Bluetooth FM Transmitter
-      I created the PCB for this using Eagle. Everything for that PCB is in the "eagle" file
+      I created the PCB for this using Eagle. Everything for that PCB is in the "Eagle" file
 - Arduino code
       Code for the M5StickC+. Everything for that is in the "Arduino code" file
 - Capacitor "EEE-FK1A560SR" from Digi-key

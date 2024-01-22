@@ -12,14 +12,10 @@ List of important things
 - BM20 - Bluetooth chip
 - M5StickC+
 - Cigarette lighter with USB-C
-- PCB for NS73M for breadboard 
-      Found one on OSH Park 
-- PCB for BM20 for breadboard
-      Found one on OSH Park
-- PCB for Bluetooth FM Transmitter
-      I created the PCB for this using Eagle. Everything for that PCB is in the "Eagle" file
-- Arduino code
-      Code for the M5StickC+. Everything for that is in the "Arduino code" file
+- PCB for NS73M for breadboard. Found one on OSH Park 
+- PCB for BM20 for breadboard. Found one on OSH Park
+- PCB for Bluetooth FM Transmitter. I created the PCB for this using Eagle. Everything for that PCB is in the "Eagle" file
+- Arduino code. Code for the M5StickC+. Everything for that is in the "Arduino code" file
 - Capacitor "EEE-FK1A560SR" from Digi-key
 - Crystal "R26-32.768-12.5" from Digi-key
 - Switch mode DC:DC converter "OKI-78SR-3.3/1.5-W36H-C" from Digi-key
